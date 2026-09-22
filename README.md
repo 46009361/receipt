@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <strong>Closes Thursday, September 24, 2026.</strong>
+  <strong>Closes Monday, September 21, 2026.</strong>
 </p>
 
 ---
@@ -58,8 +58,8 @@ see what you come up with.
 `p.noise()` are both seeded, so the same number always gives the same image.
 When the status says **Ready to print**, hit **Export PNG**.
 
-**5. Ship it.** Submit your repo link and that PNG. I print it and mail it to
-you.
+**5. Ship it.** Head to [receipt.hackclub.com/submit](https://receipt.hackclub.com/submit),
+sign in with your Hack Club account and submit it. The process should be straightforward.
 
 ---
 
