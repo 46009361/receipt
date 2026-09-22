@@ -6,6 +6,7 @@
    wrong, and filling it in unconditionally would defeat the check. */
 
 import { createHash } from "node:crypto";
+import { isDev } from "./config.js";
 
 const API = "https://api.airtable.com/v0";
 const CONTENT_API = "https://content.airtable.com/v0";
@@ -163,7 +164,10 @@ async function request(url, options) {
     },
   });
   if (!res.ok) {
-    throw new Error(`airtable ${res.status}`);
+    // Airtable names the offending field in the body, which is the only useful
+    // part of a 422. Dev only; the caller keeps it out of production responses.
+    const body = isDev() ? ` ${(await res.text()).slice(0, 400)}` : "";
+    throw new Error(`airtable ${res.status}${body}`);
   }
   return res.json();
 }
