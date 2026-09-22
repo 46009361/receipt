@@ -32,16 +32,23 @@ export function drawBarcode(ctx, x, y, width, height, value = BARCODE_VALUE) {
 
 export function createBarcodeSvg(value = BARCODE_VALUE) {
   const modules = code128Modules(value);
-  const totalWidth = modules.reduce((total, module) => total + module, 0);
-  const quietZone = 10;
+  const barsWidth = modules.reduce((total, module) => total + module, 0);
+  // Code 128 needs at least 10 clear modules either side or scanners miss the
+  // start and stop patterns.
+  const quietZone = 12;
+  const barHeight = 62;
+  const textSize = 13;
+  const width = barsWidth + quietZone * 2;
+  const height = barHeight + textSize + 7;
+
   let cursor = quietZone;
   let isBar = true;
   const bars = modules.map((module) => {
-    const bar = isBar ? `<rect x="${cursor}" width="${module}" height="60"/>` : "";
+    const bar = isBar ? `<rect x="${cursor}" width="${module}" height="${barHeight}"/>` : "";
     cursor += module;
     isBar = !isBar;
     return bar;
   }).join("");
 
-  return `<svg viewBox="0 0 ${totalWidth + quietZone * 2} 76" role="img" aria-label="Barcode for ${value}" xmlns="http://www.w3.org/2000/svg"><g fill="currentColor">${bars}</g><text x="${totalWidth / 2 + quietZone}" y="73" text-anchor="middle">${value}</text></svg>`;
+  return `<svg viewBox="0 0 ${width} ${height}" width="100%" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Barcode for ${value}" xmlns="http://www.w3.org/2000/svg"><rect width="${width}" height="${height}" fill="var(--paper, #fff)"/><g fill="currentColor" shape-rendering="crispEdges">${bars}</g><text x="${width / 2}" y="${height - 2}" text-anchor="middle" font-family="'Courier Prime', ui-monospace, monospace" font-size="${textSize}" letter-spacing="0.6" fill="currentColor">${value}</text></svg>`;
 }
