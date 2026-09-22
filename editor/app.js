@@ -14,6 +14,7 @@ const statusDot = document.querySelector("#status-dot");
 const dimensions = document.querySelector("#dimensions");
 const errorCard = document.querySelector("#error");
 const receiptShell = document.querySelector("#receipt-shell");
+const submitLink = document.querySelector("#submit");
 
 let canvas;
 let sketchInstance;
@@ -178,6 +179,7 @@ exportButton.addEventListener("click", () => {
     link.click();
     link.remove();
     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-    setStatus("PNG exported", "ok");
+    setStatus("PNG exported -- now submit it", "ok");
+    submitLink.classList.add("ready");
   }, "image/png");
 });
