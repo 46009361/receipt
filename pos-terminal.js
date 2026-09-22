@@ -1,6 +1,7 @@
 /* <pos-terminal> — three.js point-of-sale that prints a generative receipt.
    Ported from the receipt! codebase (script.js). Self-registering module. */
 import "./receipt-art.js";
+import { playPrinterSound, primeAudio } from "./printer-sound.js";
 import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 
@@ -18,7 +19,7 @@ class PosTerminal extends HTMLElement {
     this.style.height = "100%";
     PosTerminal.live = PosTerminal.live || [];
     this.addEventListener("pointerenter", () => this.wake());
-    this.addEventListener("click", () => this.wake());
+    this.addEventListener("click", () => { primeAudio(); this.wake(); });
     if (PosTerminal.live.length < 4) this.wake();
     else this.showHint();
   }
@@ -117,9 +118,10 @@ class PosTerminal extends HTMLElement {
     this.drawScreen();
     this.buildScene();
 
+    canvas.addEventListener("pointerdown", () => primeAudio());
     canvas.addEventListener("click", () => this.print());
     canvas.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); this.print(); }
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); primeAudio(); this.print(); }
     });
     canvas.addEventListener("pointermove", (e) => {
       if (reduceMotion) return;
@@ -458,6 +460,7 @@ class PosTerminal extends HTMLElement {
       this.printing = false;
       return;
     }
+    playPrinterSound({ delay: 0.45, duration: 1.93 });
     setTimeout(() => { this.printStartedAt = performance.now(); }, 450);
   }
 }
