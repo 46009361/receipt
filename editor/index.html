@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f0e7" />
+    <title>receipt! editor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;500;700&family=Unkempt:wght@400;700&display=swap" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main>
+      <header class="editor-header">
+        <a class="hack-club-mark" href="../" aria-label="Back to receipt home">
+          <img src="./assets/hack-club-2026.svg" alt="Hack Club" />
+        </a>
+      </header>
+
+      <section class="intro" aria-labelledby="editor-title">
+        <h1 id="editor-title">make your receipt.</h1>
+        <p>edit <code>sketch.js</code> and it redraws here.</p>
+      </section>
+
+      <section class="status-bar" aria-live="polite">
+        <span id="status-dot" class="status-dot"></span>
+        <span id="status">Rendering…</span>
+        <span id="dimensions" class="dimensions"></span>
+      </section>
+
+      <section class="workspace">
+        <div id="error" class="error-card" hidden></div>
+        <div id="receipt-shell" class="receipt-shell">
+          <div id="canvas-host"></div>
+          <div class="paper-end" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="controls" aria-label="Receipt controls">
+        <label for="seed">Seed</label>
+        <input id="seed" type="number" step="1" inputmode="numeric" />
+        <button id="shuffle" class="icon-button" type="button" title="Random seed" aria-label="Use a random seed">↻</button>
+        <button id="export" class="export-button" type="button">Export PNG</button>
+      </section>
+
+      <p class="editor-signoff">happy with it? ship the repo link and this PNG. run by <a href="https://cskartikey.dev/" target="_blank">@cskartikey</a></p>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

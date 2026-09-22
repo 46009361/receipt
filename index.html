@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Write a generative-art sketch. Hack Club prints it on a receipt and posts it to you." />
+    <meta name="theme-color" content="#f6f4ef" />
+    <title>Receipt — Hack Club</title>
+
+    <link rel="icon" type="image/svg+xml" href="./assets/hack-club-flag.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;500;700&family=Unkempt:wght@400;700&display=swap" />
+    <link rel="stylesheet" href="./style.css" />
+    <script type="module" src="./script.js"></script>
+  </head>
+
+  <body>
+    <main class="page-shell">
+      <header class="site-header">
+        <a class="hack-club-mark" href="https://hackclub.com/">
+          <img src="./assets/hack-club-2026.svg" alt="Hack Club" />
+        </a>
+      </header>
+
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="terminal-wrap"><pos-terminal></pos-terminal></div>
+        <h1 id="hero-title">write a sketch that draws itself.</h1>
+        <p class="intro">
+          we print it on the little thermal machine and post it to you.
+          <a href="./editor/">submit here</a>. ends <strong>september 23</strong>
+        </p>
+      </section>
+
+      <section class="gallery" aria-label="Example receipts">
+        <figure class="receipt-preview receipt-preview-left">
+          <canvas data-art data-seed="67" data-style="orbit" width="300" height="420"></canvas>
+        </figure>
+        <figure class="receipt-preview receipt-preview-center">
+          <canvas data-art data-seed="67" data-style="ridges" width="300" height="420"></canvas>
+        </figure>
+        <figure class="receipt-preview receipt-preview-right">
+          <canvas data-art data-seed="67" data-style="halftone" width="300" height="420"></canvas>
+        </figure>
+      </section>
+
+      <section class="info-receipt" aria-labelledby="how-it-works-title">
+        <span class="tape tape-wide" aria-hidden="true"></span>
+        <div class="receipt-paper">
+          <header class="receipt-header">
+            <h2 id="how-it-works-title">RECEIPT</h2>
+            <p>hack club</p>
+          </header>
+
+          <div class="rule" aria-hidden="true"></div>
+          <section aria-labelledby="steps-title">
+            <h3 id="steps-title">HOW IT WORKS</h3>
+            <ol class="steps">
+              <li><p><strong>Fork the starter repo.</strong> ...because I need to ensure it works in the constraints of my printer. Sowwy</p></li>
+              <li><p><strong>Make it yours.</strong> Edit sketch.js and see how it'll look. Once it's yours you need to ship it.</p></li>
+              <li><p><strong>Ship it.</strong> Ship Ship Ship... and wait! I'll print it on a receipt printer and send it to you. Maybe I'll drop some stickers too ;&gt;</p></li>
+            </ol>
+          </section>
+
+          <div class="rule" aria-hidden="true"></div>
+          <canvas class="wide-art" data-art data-seed="67" data-style="orbit" data-chrome="false" width="568" height="420"></canvas>
+          <div class="rule" aria-hidden="true"></div>
+
+          <section class="questions" aria-labelledby="questions-title">
+            <h3 id="questions-title">QUESTIONS &gt;_&lt;</h3>
+            <details>
+              <summary>What can I make?</summary>
+              <p>Generative art, procedural art, a tiny comic, a weird pattern -- anything you can make with code and fit on a receipt.</p>
+            </details>
+            <details>
+              <summary>What size is the receipt?</summary>
+              <p>384 pixels wide, 240–2000 pixels tall. The editor turns your final artwork into pure black and white.</p>
+            </details>
+            <details>
+              <summary>What do I submit?</summary>
+              <p>A public link to your repo and the PNG exported by the editor. You'll also need at least one hour tracked in Hackatime.</p>
+            </details>
+            <details>
+              <summary>Will you actually mail it to me?</summary>
+              <p>Yep! I'll print your art on a receipt printer and mail it to you.</p>
+            </details>
+            <details>
+              <summary>When's the deadline?</summary>
+              <p>Submit your receipt by September 23, 2026.</p>
+            </details>
+          </section>
+
+          <p class="receipt-signoff">that's genuinely it.<br />go make something.</p>
+          <div class="barcode" data-barcode="receipt.hackclub.com"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>
+        Run by <a href="https://cskartikey.dev/" target="_blank">@cskartikey</a>, made with <span aria-label="love">♥</span> by teenagers, for teenagers at
+        <a href="https://hackclub.com/">Hack Club</a> — a 501(c)(3) nonprofit and a network of 100k+ technical high schoolers.
+      </p>
+      <nav aria-label="Hack Club links">
+        <a href="https://hackclub.com/slack/">slack</a>
+        <a href="https://hackclub.com/clubs/">clubs</a>
+        <a href="https://hackclub.com/privacy-and-terms">privacy</a>
+        <a href="https://forms.hackclub.com/bounty">fulfillment</a>
+      </nav>
+    </footer>
+  </body>
+</html>
