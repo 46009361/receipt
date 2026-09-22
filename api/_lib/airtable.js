@@ -5,12 +5,13 @@
    submitter id in the Justification fields; an override is for when that goes
    wrong, and filling it in unconditionally would defeat the check. */
 
-import { createHash, randomUUID } from "node:crypto";
-import { redis } from "./store.js";
+import { createHash } from "node:crypto";
 
 const API = "https://api.airtable.com/v0";
 const CONTENT_API = "https://content.airtable.com/v0";
 const ATTACHMENT_FIELD = "Screenshot";
+// Coalesce concurrent requests in this process; Airtable holds persistent state.
+const inFlight = new Set();
 
 /* The exact record body a submission becomes. */
 export function buildFields({
@@ -61,28 +62,28 @@ export function submissionKey(hackatimeUserId, projectName) {
 
 export async function createSubmission(submission) {
   const key = submissionKey(submission.hackatimeUserId, submission.projectName);
-  const prefix = `rcpt:submission:${key}`;
-  const lock = randomUUID();
-  if (!(await redis("SET", `${prefix}:lock`, lock, "NX", "EX", 120))) throw conflict("submission_pending");
+  if (inFlight.has(key)) throw conflict("submission_pending");
+  inFlight.add(key);
   try {
-    if (await redis("GET", `${prefix}:done`)) throw conflict("already_submitted");
     const table = `${API}/${baseId()}/${tableName()}`;
-    // A persistent Airtable key recovers a successful create whose response was
-    // lost, or whose ID could not be saved. Never clear the permanent claim on
-    // an ambiguous create failure: that could allow a second POST.
+    // Recover pending records, including creates whose response was lost.
     const params = new URLSearchParams({ filterByFormula: `{Submission Key} = '${key}'`, maxRecords: "2" });
     const found = await request(`${table}?${params}`, { method: "GET" });
     if (found.records.length > 1) throw conflict("already_submitted");
     let record = found.records[0];
     if (!record) {
-      if (!(await redis("SET", `${prefix}:claimed`, "1", "NX"))) throw conflict("submission_pending");
-      record = await request(table, {
-        method: "POST",
-        body: JSON.stringify({ fields: { ...buildFields(submission), "Submission Key": key }, typecast: true }),
+      // Upsert only the key so retries cannot reset an existing record's
+      // processing flag or overwrite its submitted fields.
+      const result = await request(table, {
+        method: "PATCH",
+        body: JSON.stringify({
+          performUpsert: { fieldsToMergeOn: ["Submission Key"] },
+          records: [{ fields: { "Submission Key": key } }],
+        }),
       });
+      record = result.records[0];
     }
     if (record.fields?.["Automation - Submit to Unified YSWS"]) {
-      await redis("SET", `${prefix}:done`, record.id);
       throw conflict("already_submitted");
     }
     // Keep the first submission's fields and image together. If an upload
@@ -108,11 +109,9 @@ export async function createSubmission(submission) {
       method: "PATCH",
       body: JSON.stringify({ fields: { "Automation - Submit to Unified YSWS": true } }),
     });
-    await redis("SET", `${prefix}:done`, record.id);
     return record.id;
   } finally {
-    // Release only our lock; a late invocation cannot unlock a newer request.
-    await redis("EVAL", "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end", "1", `${prefix}:lock`, lock);
+    inFlight.delete(key);
   }
 }
 
@@ -164,8 +163,6 @@ async function request(url, options) {
     },
   });
   if (!res.ok) {
-    // Airtable names the offending field in the body, which is the only useful
-    // part of a 422. Included in dev only; the caller keeps it off the wire.
     throw new Error(`airtable ${res.status}`);
   }
   return res.json();

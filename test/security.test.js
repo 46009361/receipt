@@ -10,7 +10,7 @@ import submit from '../api/submit.js';
 import logout from '../api/auth/logout.js';
 
 const originalFetch = globalThis.fetch;
-let store, records, creates, uploads, failUpload, loseCreate, seconds, statsUrls;
+let records, creates, uploads, failUpload, loseCreate, seconds, statsUrls;
 function response() {
   return { statusCode: 200, headers: {}, setHeader(k,v) { this.headers[k]=v; },
     getHeader(k) { return this.headers[k]; }, end(value) { this.body=value ? JSON.parse(value) : null; } };
@@ -18,31 +18,16 @@ function response() {
 const ok = (body) => ({ok:true, json:async()=>body});
 beforeEach(() => {
   Object.assign(process.env, {PUBLIC_ORIGIN:'https://receipt.hackclub.com', NODE_ENV:'production',
-    SESSION_KEY:randomBytes(32).toString('base64'), UPSTASH_REDIS_REST_URL:'https://redis.test',
-    UPSTASH_REDIS_REST_TOKEN:'mock', AIRTABLE_TOKEN:'mock', AIRTABLE_BASE_ID:'appTest'});
-  store=new Map(); records=[]; creates=0; uploads=0; failUpload=false; loseCreate=false; seconds=0; statsUrls=[];
+    SESSION_KEY:randomBytes(32).toString('base64'), AIRTABLE_TOKEN:'mock', AIRTABLE_BASE_ID:'appTest'});
+  records=[]; creates=0; uploads=0; failUpload=false; loseCreate=false; seconds=0; statsUrls=[];
   globalThis.fetch=async(url, options={})=> {
-    if (url==='https://redis.test') {
-      const [cmd,key,value,...args]=JSON.parse(options.body);
-      if (cmd==='GET') return ok({result:store.get(key) ?? null});
-      if (cmd==='SET') {
-        if(args.includes('NX') && store.has(key)) return ok({result:null});
-        store.set(key,value); return ok({result:'OK'});
-      }
-      if (cmd==='EVAL') {
-        const lock=args[0], owner=args[1];
-        if(store.get(lock)===owner) store.delete(lock);
-        return ok({result:1});
-      }
-      throw Error(`Unknown Redis command ${cmd}`);
-    }
     if (String(url).includes('api.airtable.com')) {
       const body=options.body && JSON.parse(options.body);
       if(options.method==='GET') return ok({records: structuredClone(records)});
-      if(options.method==='POST') {
-        creates++; records.push({id:'rec1',fields:body.fields});
+      if(body?.performUpsert) {
+        if (!records.length) { creates++; records.push({id:'rec1',fields:body.records[0].fields}); }
         if(loseCreate) { loseCreate=false; throw Error('response lost'); }
-        return ok(structuredClone(records[0]));
+        return ok({records:structuredClone(records)});
       }
       if(options.method==='PATCH') { Object.assign(records[0].fields,body.fields); return ok(structuredClone(records[0])); }
     }
@@ -88,7 +73,7 @@ test('sibling origin, missing origin, plain text, and wrong CSRF token cannot wr
   }
 });
 
-test('logout revokes copied and refreshed cookies, and rejects GET / cross-origin',async()=>{
+test('logout clears browser cookie and rejects GET / cross-origin',async()=>{
   const req=authRequest(); const session=await getSession(req);
   const refreshed=response();setSession(refreshed,{...session,ht:'new'});
   const refreshedReq={headers:{cookie:refreshed.headers['Set-Cookie'][0].split(';')[0]}};
@@ -96,8 +81,9 @@ test('logout revokes copied and refreshed cookies, and rejects GET / cross-origi
     const res=response();await logout(candidate,res);assert.ok([403,405].includes(res.statusCode));assert.ok(await getSession(req));
   }
   const res=response();await logout(req,res);assert.equal(res.statusCode,200);
-  assert.equal(await getSession(req),null);assert.equal(await getSession(refreshedReq),null);
-  const replay=response();await submit({...req,body:{}},replay);assert.equal(replay.statusCode,401);
+  assert.match(res.headers['Set-Cookie'][0], /Max-Age=0/);
+  // Copied cookies intentionally remain valid until expiry.
+  assert.ok(await getSession(req));assert.ok(await getSession(refreshedReq));
 });
 
 test('persistent project uniqueness rejects sequential and concurrent replays',async()=>{

@@ -4,7 +4,6 @@
 
 import { createCipheriv, createDecipheriv, randomBytes, timingSafeEqual } from "node:crypto";
 
-import { redis } from "./store.js";
 import { isDev } from "./config.js";
 
 const COOKIE = "rcpt_session";
@@ -55,17 +54,10 @@ export function readCookie(req, name) {
   return null;
 }
 
-export async function getSession(req) {
+export function getSession(req) {
   const session = unseal(readCookie(req, COOKIE));
-  // Old cookies have no revocable identifier: require a fresh sign-in.
-  if (!session?.sid || !session?.csrf) return null;
-  if (await redis("GET", `rcpt:revoked:${session.sid}`)) return null;
-  return session;
-}
-
-export async function revokeSession(session) {
-  // Keep revocations for a full cookie lifetime, including refreshed cookies.
-  await redis("SET", `rcpt:revoked:${session.sid}`, "1", "EX", TTL_MS / 1000);
+  // Pre-CSRF cookies require a fresh sign-in.
+  return session?.csrf ? session : null;
 }
 
 export function setCookie(res, name, value, maxAgeSec) {
@@ -90,7 +82,6 @@ export function setCookie(res, name, value, maxAgeSec) {
 export function setSession(res, payload) {
   setCookie(res, COOKIE, seal({
     ...payload,
-    sid: payload.sid || randomBytes(32).toString("base64url"),
     csrf: payload.csrf || randomBytes(32).toString("base64url"),
   }), TTL_MS / 1000);
 }

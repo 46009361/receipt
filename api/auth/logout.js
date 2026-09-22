@@ -1,4 +1,4 @@
-import { clearSession, getSession, revokeSession } from "../_lib/session.js";
+import { clearSession, getSession } from "../_lib/session.js";
 import { checkMutation } from "../_lib/csrf.js";
 
 export default async function handler(req, res) {
@@ -16,7 +16,6 @@ export default async function handler(req, res) {
         res.statusCode = rejection.status;
         return res.end(JSON.stringify({ error: rejection.error }));
       }
-      await revokeSession(session);
     }
     clearSession(res);
     res.end(JSON.stringify({ ok: true }));
