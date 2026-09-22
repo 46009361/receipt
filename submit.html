@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#f6f4ef" />
+    <title>Submit — Receipt</title>
+
+    <link rel="icon" type="image/svg+xml" href="./assets/hack-club-flag.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700&family=Unkempt:wght@400;700&display=swap" />
+    <link rel="stylesheet" href="./style.css" />
+    <script type="module" src="./submit.js"></script>
+  </head>
+
+  <body class="submit-page">
+    <a class="submit-mark" href="/">
+      <img src="./assets/hack-club-2026.svg" alt="Hack Club" />
+    </a>
+
+    <main class="submit-stage">
+      <form class="submit-card" hidden novalidate>
+        <aside class="showcase">
+          <div class="showcase-terminal"><pos-terminal></pos-terminal></div>
+        </aside>
+
+        <div class="submit-main">
+          <h1>Submit your receipt</h1>
+
+          <p class="notice" data-status hidden></p>
+
+          <section data-view="trouble" hidden>
+            <p class="lede">
+              We couldn't check whether you're signed in. Have another go. If it
+              keeps happening, give it a minute.
+            </p>
+            <div class="actions">
+              <a class="chunky chunky-primary" href="/api/auth/login">sign in with hack club &rarr;</a>
+            </div>
+          </section>
+
+          <!-- Signed in, Hackatime not linked -->
+          <section data-view="needs-hackatime" hidden>
+            <p class="lede">
+              You need an hour tracked on this. Connect Hackatime and we'll read the
+              hours off your project ourselves, so there are no screenshots to take.
+            </p>
+            <div class="actions">
+              <a class="chunky chunky-primary" href="/api/auth/hackatime">connect hackatime &rarr;</a>
+              <a class="chunky" href="/api/auth/logout">sign out</a>
+            </div>
+          </section>
+
+          <!-- The form -->
+          <div data-view="signed-in" hidden>
+            <div class="fields">
+              <div class="field">
+                <label for="projectName">Hackatime project</label>
+                <div class="select-wrap">
+                  <select id="projectName" name="projectName" required>
+                    <option value="">Loading your projects…</option>
+                  </select>
+                  <span class="select-chevron" aria-hidden="true"></span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="repoUrl">Repo link</label>
+                <input
+                  id="repoUrl"
+                  name="repoUrl"
+                  type="url"
+                  inputmode="url"
+                  placeholder="https://github.com/cskartikey/receipt"
+                  autocomplete="off"
+                  required
+                />
+              </div>
+
+              <div class="field">
+                <label for="description">Description</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  rows="4"
+                  maxlength="600"
+                  placeholder="What did you make, and how does it work?"
+                  required
+                ></textarea>
+                <small><span data-count>0</span>/600, at least 20 characters.</small>
+              </div>
+
+              <div class="field">
+                <div class="field-title">Your artwork</div>
+
+                <button type="button" class="dropzone" data-dropzone>
+                  <span class="dropzone-arrow" aria-hidden="true">&#8673;</span>
+                  <span class="dropzone-title">Drop your PNG here</span>
+                  <span class="dropzone-hint">or click to browse.</span>
+                </button>
+
+                <div class="dropfile" data-dropfile hidden>
+                  <img alt="Your receipt artwork" data-preview />
+                  <div class="dropfile-meta">
+                    <div class="dropfile-name" data-filename></div>
+                    <div class="dropfile-size" data-filemeta></div>
+                    <button type="button" class="link-button" data-replace>Replace</button>
+                  </div>
+                </div>
+
+                <input type="file" name="png" accept="image/png" data-fileinput hidden />
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="chunky chunky-primary" type="submit">ship it &rarr;</button>
+              <a class="chunky" href="/api/auth/logout">sign out</a>
+            </div>
+          </div>
+
+          <!-- Done -->
+          <section data-view="done" hidden>
+            <p class="lede">
+              That's in the queue. I'll print it and put it in the post. Keep an eye
+              on your letterbox ;&gt;
+            </p>
+            <div class="actions"><a class="chunky" href="/">back home</a></div>
+          </section>
+        </div>
+      </form>
+    </main>
+
+    <script type="module" src="./pos-terminal.js"></script>
+  </body>
+</html>

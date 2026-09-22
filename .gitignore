@@ -5,3 +5,6 @@ dist
 *.log
 *.tar.gz
 .openai
+.env
+.env.local
+.vercel
