@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <strong>Closes Monday, September 21, 2026.</strong>
+  <strong>Closes Thursday, September 24, 2026.</strong>
 </p>
 
 ---
