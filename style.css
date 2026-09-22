@@ -483,3 +483,72 @@ code { font-family: "Courier Prime", monospace; font-weight: 700; }
 @media (max-width: 480px) {
   .actions { flex-direction: column; align-items: stretch; }
 }
+
+/* ---------- bonus: thermal printer prize ---------- */
+
+.bonus {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: stretch;
+  width: min(470px, 92vw);
+  margin-top: clamp(48px, 8vw, 90px);
+  overflow: hidden;
+  border: 2.5px solid var(--thermal);
+  border-radius: 16px;
+  background: var(--paper);
+  box-shadow: 0 6px 0 var(--thermal), 0 18px 34px rgb(45 58 69 / 14%);
+  transform: rotate(-1deg);
+}
+
+/* Tinted panel, same idea as the submit form's counter, with a perforated
+   edge so the card reads as something you tear along. */
+.bonus-art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px clamp(16px, 3.5vw, 22px);
+  border-right: 2.5px dashed var(--thermal);
+  background: rgb(154 208 236 / 34%);
+}
+
+/* Sized by width so a replacement photo of any aspect ratio still fits. */
+.cat-printer {
+  display: block;
+  width: clamp(92px, 20vw, 116px);
+  height: auto;
+  max-height: 150px;
+  object-fit: contain;
+}
+
+.bonus-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: clamp(18px, 4vw, 24px) clamp(18px, 4vw, 24px);
+}
+
+.bonus-copy h2 {
+  align-self: flex-start;
+  margin: 0;
+  padding: 4px 11px;
+  border: 2px solid var(--thermal);
+  border-radius: 999px;
+  background: #f4978e;
+  color: var(--thermal);
+  font: 700 11px/1 "Courier Prime", monospace;
+  letter-spacing: 2.2px;
+}
+
+.bonus-copy p {
+  margin: 0;
+  color: var(--thermal);
+  font: 13px/1.8 "Courier Prime", monospace;
+  text-wrap: pretty;
+}
+
+@media (max-width: 420px) {
+  .bonus { grid-template-columns: 1fr; text-align: center; }
+  .bonus-art { border-right: 0; border-bottom: 2.5px dashed var(--thermal); }
+  .bonus-copy { align-items: center; }
+  .bonus-copy h2 { align-self: center; }
+}
