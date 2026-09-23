@@ -84,32 +84,25 @@ export async function createSubmission(submission) {
       });
       record = result.records[0];
     }
-    if (record.fields?.["Automation - Submit to Unified YSWS"]) {
+    
+    if (record.fields?.[ATTACHMENT_FIELD]?.length) {
       throw conflict("already_submitted");
-    }
-    // Keep the first submission's fields and image together. If an upload
-    // succeeded but its response was lost, reuse the existing attachment.
-    if (!record.fields?.[ATTACHMENT_FIELD]?.length) {
-      await request(`${table}/${record.id}`, {
-        method: "PATCH",
-        body: JSON.stringify({ fields: buildFields(submission), typecast: true }),
-      });
-      await request(
-        `${CONTENT_API}/${baseId()}/${record.id}/${encodeURIComponent(ATTACHMENT_FIELD)}/uploadAttachment`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            contentType: "image/png",
-            filename: `receipt-${submission.projectName.replace(/[^a-z0-9-]/gi, "-")}.png`,
-            file: submission.png.buf.toString("base64"),
-          }),
-        },
-      );
     }
     await request(`${table}/${record.id}`, {
       method: "PATCH",
-      body: JSON.stringify({ fields: { "Automation - Submit to Unified YSWS": true } }),
+      body: JSON.stringify({ fields: buildFields(submission), typecast: true }),
     });
+    await request(
+      `${CONTENT_API}/${baseId()}/${record.id}/${encodeURIComponent(ATTACHMENT_FIELD)}/uploadAttachment`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          contentType: "image/png",
+          filename: `receipt-${submission.projectName.replace(/[^a-z0-9-]/gi, "-")}.png`,
+          file: submission.png.buf.toString("base64"),
+        }),
+      },
+    );
     return record.id;
   } finally {
     inFlight.delete(key);
