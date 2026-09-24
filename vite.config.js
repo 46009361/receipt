@@ -14,9 +14,9 @@ function apiRoutes() {
       server.middlewares.use(async (req, res, next) => {
         const { pathname } = new URL(req.url, "http://localhost");
 
-        // /submit is a rewrite in production (see vercel.json); match it here.
-        if (pathname === "/submit") {
-          req.url = "/submit.html" + req.url.slice(pathname.length);
+        // /submit and /gallery are rewrites in production (see server.js); match them here.
+        if (pathname === "/submit" || pathname === "/gallery") {
+          req.url = `${pathname}.html` + req.url.slice(pathname.length);
           return next();
         }
 
@@ -47,11 +47,22 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [apiRoutes()],
+    server: {
+      // The gallery renders sketches in a sandboxed frame, whose origin is
+      // opaque, so its module requests arrive as `Origin: null`. Vite's default
+      // (localhost only) would refuse them.
+      cors: { origin: [/^https?:\/\/(?:(?:[^:]+\.)?localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/, "null"] },
+    },
     build: {
+      // Emit assets as files rather than inlining small ones as data URIs, so
+      // the placeholder printer image stays a file you can swap out.
+      assetsInlineLimit: 0,
       rollupOptions: {
         input: {
           main: resolve(root, "index.html"),
           submit: resolve(root, "submit.html"),
+          gallery: resolve(root, "gallery.html"),
+          galleryFrame: resolve(root, "gallery-frame.html"),
         },
       },
     },

@@ -40,6 +40,27 @@ const SECURITY_HEADERS = {
   ].join("; "),
 };
 
+/* The gallery's sketch renderer runs other people's code. `sandbox` makes its
+   origin opaque even if it's opened directly, and connect-src 'none' keeps a
+   sketch from sending anything anywhere. Only this site may frame it. */
+const FRAME_HEADERS = {
+  ...SECURITY_HEADERS,
+  "X-Frame-Options": "SAMEORIGIN",
+  "Content-Security-Policy": [
+    "sandbox allow-scripts",
+    "default-src 'none'",
+    // 'self' is ambiguous for an opaque origin, so name the site as well.
+    `script-src 'self' ${process.env.PUBLIC_ORIGIN || ""} blob:`.replace(/\s+/g, " "),
+    "style-src 'unsafe-inline' https://fonts.googleapis.com",
+    "font-src https://fonts.gstatic.com",
+    "img-src data: blob:",
+    "connect-src 'none'",
+    "frame-ancestors 'self'",
+    "base-uri 'none'",
+    "form-action 'none'",
+  ].join("; "),
+};
+
 // Cache handler modules so each request isn't a fresh import.
 const handlers = new Map();
 
@@ -76,12 +97,19 @@ async function serveStatic(res, pathname) {
     if (info.isDirectory()) return serveStatic(res, join(requested, "index.html"));
 
     const type = TYPES[extname(file)] || "application/octet-stream";
+    const isAsset = file.includes(`${sep}assets${sep}`);
     // Hashed asset filenames are safe to cache hard; everything else is not.
-    const cache = file.includes(`${sep}assets${sep}`)
-      ? "public, max-age=31536000, immutable"
-      : "no-cache";
+    const cache = isAsset ? "public, max-age=31536000, immutable" : "no-cache";
+    const headers = file === resolve(DIST, "gallery-frame.html") ? FRAME_HEADERS : SECURITY_HEADERS;
 
-    res.writeHead(200, { ...SECURITY_HEADERS, "Content-Type": type, "Cache-Control": cache });
+    res.writeHead(200, {
+      ...headers,
+      "Content-Type": type,
+      "Cache-Control": cache,
+      // The sandboxed renderer's opaque origin loads these as modules, which
+      // needs CORS. They are public build output either way.
+      ...(isAsset && { "Access-Control-Allow-Origin": "*" }),
+    });
     res.end(await readFile(file));
   } catch {
     notFound(res);
@@ -116,8 +144,8 @@ const server = createServer(async (req, res) => {
     return;
   }
 
-  // /submit is a real page, not a directory.
-  if (pathname === "/submit") return serveStatic(res, "/submit.html");
+  // /submit and /gallery are real pages, not directories.
+  if (pathname === "/submit" || pathname === "/gallery") return serveStatic(res, `${pathname}.html`);
 
   return serveStatic(res, pathname);
 });

@@ -616,3 +616,78 @@ code { font-family: "Courier Prime", monospace; font-weight: 700; }
 @media (prefers-reduced-motion: reduce) {
   .scroll-cue-tab { animation: none; }
 }
+
+/* ---------- gallery ---------- */
+
+.gallery-intro { display: flex; flex-direction: column; align-items: center; margin-top: clamp(48px, 8vw, 84px); }
+.gallery-intro code { color: var(--accent-dark); }
+
+.gallery-status { margin: 48px 0 0; color: var(--soft); font: 700 14px/1.6 "Courier Prime", monospace; text-align: center; }
+
+.wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(230px, 100%), 1fr));
+  align-items: start;
+  gap: clamp(36px, 5vw, 56px) clamp(20px, 3vw, 36px);
+  width: min(1120px, 100%);
+  margin: clamp(48px, 7vw, 76px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wall-item { display: flex; flex-direction: column; align-items: center; scroll-margin-top: 40px; }
+
+.wall-art {
+  position: relative;
+  display: block;
+  width: min(230px, 100%);
+  transform: rotate(var(--tilt, 0deg));
+  transition: transform 140ms ease;
+}
+.wall-art:hover,
+.wall-art:focus-visible { transform: rotate(0deg) translateY(-4px); }
+.wall-item.is-linked .wall-art { outline: 3px solid #f4978e; outline-offset: 6px; }
+
+.wall-art img,
+.wall-paper {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--paper);
+  box-shadow: 0 10px 22px rgb(45 58 69 / 16%);
+  image-rendering: pixelated;
+}
+
+.wall-paper {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 384 / 700;
+  padding: 18px;
+  color: var(--soft);
+  font: 700 13px/1.5 "Courier Prime", monospace;
+  text-align: center;
+  overflow-wrap: anywhere;
+  animation: wall-printing 1.2s ease-in-out infinite alternate;
+}
+.wall-paper-error { color: var(--accent-dark); animation: none; }
+
+@keyframes wall-printing { from { opacity: 0.55; } to { opacity: 1; } }
+
+.wall-caption {
+  max-width: 100%;
+  margin: 20px 0 0;
+  color: var(--thermal);
+  font-family: "Unkempt", cursive;
+  font-size: 19px;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+.wall-caption a { text-decoration-thickness: 2px; text-underline-offset: 3px; }
+
+.wall-code { margin-top: 4px; color: var(--soft); font: 700 12px/1.4 "Courier Prime", monospace; }
+
+/* Off-screen, not display:none, so fonts and canvas behave as they would in
+   the editor. */
+.render-frame { position: fixed; top: 0; left: -10000px; width: 400px; height: 200px; border: 0; visibility: hidden; }
+
+.hero-gallery { margin-top: 16px; color: var(--soft); font: 700 14px/1.4 "Courier Prime", monospace; text-underline-offset: 3px; }

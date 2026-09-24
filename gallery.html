@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="don't get rickrolled...." />
+    <meta name="theme-color" content="#f6f4ef" />
+    <title>Gallery — Receipt</title>
+
+    <link rel="icon" type="image/svg+xml" href="./assets/hack-club-flag.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;500;700&family=Unkempt:wght@400;700&display=swap" />
+    <link rel="stylesheet" href="./style.css" />
+    <script type="module" src="./gallery.js"></script>
+  </head>
+
+  <body>
+    <main class="page-shell">
+      <header class="site-header">
+        <a class="hack-club-mark" href="/">
+          <img src="./assets/hack-club-2026.svg" alt="Hack Club" />
+        </a>
+      </header>
+
+      <section class="gallery-intro" aria-labelledby="gallery-title">
+        <h1 id="gallery-title">the gallery.</h1>
+        <p class="intro">every receipt so far, drawn live from its own <code>sketch.js</code>.</p>
+        <div class="hero-actions">
+          <a class="hero-start" href="https://github.com/hackclub/receipt" target="_blank">make one</a>
+          <a class="hero-submit" href="/submit">submit &rarr;</a>
+        </div>
+      </section>
+
+      <p class="gallery-status" data-status>Fetching receipts…</p>
+      <ol class="wall" data-wall aria-label="Submitted receipts"></ol>
+    </main>
+
+    <footer class="site-footer">
+      <p>
+        Run by <a href="https://cskartikey.dev/" target="_blank">@cskartikey</a>, made with <span aria-label="love">♥</span> by teenagers, for teenagers at
+        <a href="https://hackclub.com/">Hack Club</a>.
+      </p>
+    </footer>
+  </body>
+</html>

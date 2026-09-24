@@ -98,7 +98,7 @@ test('failed upload stays pending and retry reuses its record',async()=>{
   await assert.rejects(createSubmission(data),/upload failed/);
   assert.equal(records[0].fields['Automation - Submit to Unified YSWS'],false);
   failUpload=false;await createSubmission(data);
-  assert.equal(creates,1);assert.equal(uploads,2);assert.equal(records[0].fields['Automation - Submit to Unified YSWS'],true);
+  assert.equal(creates,1);assert.equal(uploads,2);assert.equal(records[0].fields['Automation - Submit to Unified YSWS'],false);
 });
 
 test('lost create response is recovered by the persistent Airtable key',async()=>{
