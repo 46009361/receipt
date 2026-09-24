@@ -146,13 +146,26 @@ function renderSketch(source) {
       if (event.source !== frame.contentWindow) return;
       const data = event.data || {};
       if (data.ready) frame.contentWindow.postMessage({ source }, "*");
-      else if (data.png instanceof Blob) done(resolve, data.png);
+      else if (data.png instanceof Blob) isPng(data.png).then((ok) => (ok ? done(resolve, asPng(data.png)) : done(reject, new Error("not a PNG"))));
       else done(reject, new Error(String(data.error || "unknown error").slice(0, 200)));
     }
 
     addEventListener("message", onMessage);
     document.body.append(frame);
   });
+}
+
+/* The Blob comes from a sketch, and its type is whatever the sketch says. Its
+   object URL is on this site's origin, so a Blob typed text/html, opened with
+   "open image in new tab", would be a page on this site. Only a real PNG, typed
+   as one, gets a URL. */
+async function isPng(blob) {
+  const head = new Uint8Array(await blob.slice(0, 8).arrayBuffer());
+  return [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a].every((byte, i) => head[i] === byte);
+}
+
+function asPng(blob) {
+  return new Blob([blob], { type: "image/png" });
 }
 
 function githubUrl(value) {

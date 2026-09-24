@@ -13,6 +13,7 @@ const SKETCH_PATHS = ["editor/sketch.js", "sketch.js"];
 const MAX_SKETCH_BYTES = 256 * 1024;
 const TTL = 10 * 60 * 1000;
 const NAME_TTL = 24 * 60 * 60 * 1000;
+const RETRY = 60 * 1000;
 
 let cached = null;
 let pending = null;
@@ -27,8 +28,18 @@ export function getGallery() {
       cached = { at: Date.now(), items };
       return items;
     })
+    .catch((error) => {
+      // Keep the stale wall up and back off a minute, rather than send every
+      // visitor to Airtable while it's down.
+      if (cached) cached.at = Date.now() - TTL + RETRY;
+      throw error;
+    })
     .finally(() => { pending = null; });
-  return cached ? Promise.resolve(cached.items) : pending;
+  if (!cached) return pending;
+  // Nobody awaits a background refresh, and an unhandled rejection would take
+  // the whole server down.
+  pending.catch((error) => console.error("[gallery] refresh:", error.message));
+  return Promise.resolve(cached.items);
 }
 
 async function buildGallery() {
