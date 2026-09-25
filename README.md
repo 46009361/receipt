@@ -19,18 +19,18 @@
 
 You write a small generative-art sketch in p5.js. It renders to a 384 px-wide
 black-and-white image. Submit it, and a real receipt gets printed and mailed to you. Maybe with
-stickers ;)
+stickers ;&#x29;
 
-## Make one
+## Make one (made for Windows to add extra minutes to Hackatime)
 
 **1. Fork this repo** and clone your fork. Everything you need is in
-[`editor/`](./editor/).
+[`editor/`](./editor/). (The contest is ending, so there's no point in forking the repo anymore except to learn coding and p5.js in general.)
 
-```sh
-git clone https://github.com/<your-username>/receipt.git
+```powershell
+git clone git@github.com:46009361/receipt.git # changed due to internal workflow
 cd receipt/editor
-npm install
-npm run dev
+npm.cmd install # Smart App Control restricts the execution policy for npm.ps1
+npm.cmd run dev
 ```
 
 **2. Open the local URL** Usually, it is http://localhost:5173/
@@ -40,8 +40,8 @@ and save. The preview redraws on every save. Two things matter:
 
 ```js
 export const receipt = {
-  height: 1080, // 240–2000 px. Width is fixed at 384 by the printer.
-  seed: 67,
+  height: 2000, // 240–2000 px. Width is fixed at 384 by the printer.
+  seed: 67, // editor's note: do we really need a comma there?
 };
 
 export function drawReceipt(p) {
@@ -59,7 +59,9 @@ see what you come up with.
 When the status says **Ready to print**, hit **Export PNG**.
 
 **5. Ship it.** Head to [receipt.hackclub.com/submit](https://receipt.hackclub.com/submit),
-sign in with your Hack Club account and submit it. The process should be straightforward.
+sign in with your Hack Club account and submit it. The process should be straightforward. *Make sure to `git push` your fork, too!*
+
+**6. In your terminal**, press `q` and enter to stop your computer from deploying `localhost:5173` in the background. (I'm on Vite, in case `dev` isn't the same for everyone<!--; I wonder if it functions like the `edit` command -->.)
 
 ---
 
