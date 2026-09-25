@@ -22,7 +22,7 @@ You write a small generative-art sketch in p5.js. It renders to a 384 px-wide
 black-and-white image. Submit it, and a real receipt gets printed and mailed to you. Maybe with
 stickers ;&#x29;
 
-## Make one (made for Windows to add extra minutes to Hackatime)
+## Make one (instructions made for Windows to add extra minutes to Hackatime)
 
 **1. Fork this repo** and clone your fork. Everything you need is in
 [`editor/`](./editor/). (The contest is ending, so there's no point in forking the repo anymore except to learn coding and p5.js in general.)
