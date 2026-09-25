@@ -1,7 +1,6 @@
-![A receipt saying "write anything" at the top and a barcode for receipt.hackclub.com at the bottom](receipt-seed-67.png "A receipt saying "write anything" at the top and a barcode for receipt.hackclub.com at the bottom")
-
 <p align="center">
-  <img src="./assets/hack-club-2026.svg" alt="Hack Club" width="220" />
+  <img src="./assets/hack-club-2026.svg" alt="Hack Club" width="220" /><br/>
+  <img src="receipt-seed-67.png" alt='A receipt saying "write anything" at the top and a barcode for receipt.hackclub.com at the bottom' title='Please scroll down. Sorry for the missing border; this is inherent to the underlying Markdown.' width="384" />
 </p>
 
 <h1 align="center">Receipt!</h1>
