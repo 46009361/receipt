@@ -1,3 +1,5 @@
+![A receipt saying "write anything" at the top and a barcode for receipt.hackclub.com at the bottom](receipt-seed-67.png "A receipt saying "write anything" at the top and a barcode for receipt.hackclub.com at the bottom")
+
 <p align="center">
   <img src="./assets/hack-club-2026.svg" alt="Hack Club" width="220" />
 </p>
@@ -10,7 +12,7 @@
 </p>
 
 <p align="center">
-  <strong>Closes Thursday, September 24, 2026.</strong>
+  <strong>Closes Friday, September 25, 2026 00:00 EDT (UTC&minus;04:00).</strong>
 </p>
 
 ---
